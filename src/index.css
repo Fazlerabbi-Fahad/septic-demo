@@ -1,0 +1,233 @@
+@import "tailwindcss";
+
+/* Color values are injected on :root from brand.config.js (see vite.config.js).
+   These fallbacks only apply if that injection is missing. */
+:root {
+  --meadow: #f5f3ec;
+  --stone: #e7e4d9;
+  --ink: #1b1e1a;
+  --forest: #22322a;
+  --amber: #a85c14;
+  --muted: #646a60;
+}
+
+@theme inline {
+  --color-meadow: var(--meadow);
+  --color-stone: var(--stone);
+  --color-ink: var(--ink);
+  --color-forest: var(--forest);
+  --color-amber: var(--amber);
+  --color-muted: var(--muted);
+
+  --font-display: "Bricolage Grotesque Variable", "Source Sans 3", Georgia, serif;
+  --font-body: "Source Sans 3", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+  --breakpoint-nav: 860px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    background: var(--meadow);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  ::selection {
+    background: var(--amber);
+    color: #fff;
+  }
+  /* Visible amber focus ring with a meadow halo so it reads on every background. */
+  :focus-visible {
+    outline: 3px solid var(--amber);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px var(--meadow);
+    border-radius: 4px;
+  }
+  /* Programmatic focus targets (headings, main) do not need a ring. */
+  [tabindex="-1"]:focus {
+    outline: none;
+    box-shadow: none;
+  }
+  /* Set by an inline script in <head> until GSAP takes over (max 3s). */
+  .motion-pending [data-hero-line] {
+    transform: translateY(100%);
+  }
+  .motion-pending [data-hero-fade] {
+    opacity: 0;
+  }
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+}
+
+@layer components {
+  .page-x {
+    padding-inline: clamp(1.5rem, 6vw, 7rem);
+  }
+  .container-x {
+    max-width: 1440px;
+    margin-inline: auto;
+  }
+  .section-y {
+    padding-block: clamp(6rem, 14vh, 10rem);
+  }
+  .h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(3.25rem, 7.5vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+  .h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.25rem, 4.5vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
+  }
+  .h3 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.375rem, 1.8vw, 1.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+  .display-light {
+    font-family: var(--font-display);
+    font-weight: 200;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .label {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+  .mono {
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 3.25rem;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 1.0625rem;
+    line-height: 1.2;
+    text-decoration: none;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease,
+      transform 0.25s var(--ease-reveal);
+    cursor: pointer;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-amber {
+    background: var(--amber);
+    color: #fff;
+  }
+  .btn-amber:hover {
+    background: color-mix(in srgb, var(--amber) 86%, var(--ink));
+  }
+  .btn-outline-light {
+    border: 1.5px solid color-mix(in srgb, var(--meadow) 75%, transparent);
+    color: var(--meadow);
+  }
+  .btn-outline-light:hover {
+    background: var(--meadow);
+    color: var(--ink);
+  }
+  .btn-outline-dark {
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+  }
+  .btn-outline-dark:hover {
+    background: var(--ink);
+    color: var(--meadow);
+  }
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.3em;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    transition: text-decoration-color 0.2s ease;
+  }
+  .link-arrow:hover {
+    text-decoration-color: currentColor;
+  }
+  /* Mask for line-rise reveals */
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+  .line-mask > span {
+    display: block;
+  }
+  .sr-only-focusable:not(:focus) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  /* Septic diagram labels: larger on phones where the SVG is scaled down */
+  .diagram-label {
+    font-size: 12px;
+  }
+  .diagram-label--sm {
+    font-size: 11px;
+  }
+  @media (max-width: 859px) {
+    .diagram-label {
+      font-size: 19px;
+    }
+    .diagram-label--sm {
+      font-size: 15px;
+    }
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
