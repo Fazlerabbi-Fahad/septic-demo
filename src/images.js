@@ -89,6 +89,13 @@ const images = {
     alt: "White tanker truck parked in the shade of leafy trees",
     caption: "Trucks washed before every job",
   },
+  // Link preview (Open Graph) image: 1200x630 JPG, the size and format every share target accepts.
+  og: {
+    src: "/images/og-image.jpg",
+    width: 1200,
+    height: 630,
+    alt: "Two-story country home with a wide, freshly mowed green lawn and a white fence under a clear sky",
+  },
   excavatorSite: {
     src: "/images/general-excavator-residential.webp",
     srcSet: "/images/general-excavator-residential-800.webp 800w, /images/general-excavator-residential.webp 1400w",

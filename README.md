@@ -113,6 +113,11 @@ Both hosts just need the build command and output folder.
 2. Build command `npm run build`, publish directory `dist`.
 3. Same `siteUrl` step as above.
 
+**Link previews** (WhatsApp, Facebook, iMessage, Slack, X, LinkedIn) use `public/images/og-image.jpg`
+(1200×630). Preview tags need absolute URLs, so the build uses, in order: a `SITE_URL` env var, the
+Vercel or Netlify production URL, then `siteUrl` from `brand.config.js`. Share apps cache previews, so
+after changing it, re-scrape the link in the [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/).
+
 **Form:** create a Formspree form (or any endpoint that accepts JSON `POST` with
 `Accept: application/json`), put its URL in `form.endpoint`, and redeploy. With an empty endpoint, submissions
 are only logged to the browser console.

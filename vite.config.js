@@ -6,18 +6,31 @@ import images from "./src/images.js";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 
+/**
+ * Absolute site URL for canonical, Open Graph and sitemap links. Link previews need absolute
+ * URLs on the real domain, so prefer an explicit SITE_URL, then the host's production URL
+ * (Vercel, Netlify), and fall back to brand.siteUrl.
+ */
+const siteUrl = (
+  process.env.SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL && `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`) ||
+  (process.env.CONTEXT === "production" && process.env.URL) ||
+  process.env.DEPLOY_PRIME_URL ||
+  brand.siteUrl
+).replace(/\/+$/, "");
+
 /** Writes brand-driven <head> content into index.html so it is static (good for SEO and no color flash). */
 function brandHead() {
   const { colors, address, serviceArea } = brand;
   const title = `${brand.name} | Septic Pumping, Inspections & Repair in ${address.city}, ${address.state}`;
-  const ogImage = brand.siteUrl + images.hero.src;
+  const ogImage = siteUrl + images.og.src;
 
   const localBusiness = {
     "@context": "https://schema.org",
     "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
     name: brand.name,
     description: brand.description,
-    url: brand.siteUrl,
+    url: siteUrl,
     telephone: brand.phoneHref,
     email: brand.email,
     image: ogImage,
@@ -63,7 +76,7 @@ function brandHead() {
         source: `User-agent: *
 Allow: /
 
-Sitemap: ${brand.siteUrl}/sitemap.xml
+Sitemap: ${siteUrl}/sitemap.xml
 `,
       });
       this.emitFile({
@@ -71,7 +84,7 @@ Sitemap: ${brand.siteUrl}/sitemap.xml
         fileName: "sitemap.xml",
         source: `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>${brand.siteUrl}/</loc><changefreq>monthly</changefreq></url>
+  <url><loc>${siteUrl}/</loc><changefreq>monthly</changefreq></url>
 </urlset>
 `,
       });
@@ -89,17 +102,26 @@ Sitemap: ${brand.siteUrl}/sitemap.xml
       const head = `
     <title>${esc(title)}</title>
     <meta name="description" content="${esc(brand.description)}" />
-    <link rel="canonical" href="${esc(brand.siteUrl)}/" />
+    <link rel="canonical" href="${esc(siteUrl)}/" />
     <meta name="theme-color" content="${colors.forest}" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,${encodeURIComponent(favicon)}" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="${esc(brand.name)}" />
     <meta property="og:title" content="${esc(title)}" />
     <meta property="og:description" content="${esc(brand.description)}" />
-    <meta property="og:url" content="${esc(brand.siteUrl)}/" />
+    <meta property="og:url" content="${esc(siteUrl)}/" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:image" content="${esc(ogImage)}" />
-    <meta property="og:image:alt" content="${esc(images.hero.alt)}" />
+    <meta property="og:image:secure_url" content="${esc(ogImage)}" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="${images.og.width}" />
+    <meta property="og:image:height" content="${images.og.height}" />
+    <meta property="og:image:alt" content="${esc(images.og.alt)}" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${esc(title)}" />
+    <meta name="twitter:description" content="${esc(brand.description)}" />
+    <meta name="twitter:image" content="${esc(ogImage)}" />
+    <meta name="twitter:image:alt" content="${esc(images.og.alt)}" />
     <link rel="preload" as="image" href="${images.hero.src}" imagesrcset="${images.hero.srcSet}" imagesizes="100vw" fetchpriority="high" />
     ${fontPreloads}
     <style>:root{${tokens}}</style>
